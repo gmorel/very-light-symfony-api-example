@@ -32,6 +32,11 @@ final class CreateProductRequest
         $this->name = $name;
     }
 
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
     public function toCommand(): CreateProductCommand
     {
         return new CreateProductCommand(

@@ -2,6 +2,8 @@
 
 namespace App\Product\UI\Controller;
 
+use App\Common\UI\Validation\DTO\Error\FormErrorItemRfc7807DTO;
+use App\Common\UI\Validation\DTO\Error\FormErrorRfc7807DTO;
 use App\Product\Application\ProductCommandService;
 use App\Product\UI\Request\CreateProductRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,10 +13,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Exception\MissingConstructorArgumentsException;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * @Route("v1/products")
+ * @Route("v1/{_locale}/products",
+ *     defaults={"_locale"="en"},
+ *     requirements={"_locale"="en|fr"}
+ * )
  */
 class ProductController extends AbstractController
 {
@@ -44,20 +50,61 @@ class ProductController extends AbstractController
 
             $errors = $this->validator->validate($refinedRequest);
             if ($errors->count() > 0) {
-                // @todo Return 400: UI Validation
+                return new JsonResponse(
+                    $this->createErrorFromValidation($errors),
+                    Response::HTTP_BAD_REQUEST
+                );
             }
-            $command = $refinedRequest->toCommand();
-            $this->commandService->create($command);
+
+            $this->commandService->create(
+                $refinedRequest->toCommand()
+            );
         } catch (MissingConstructorArgumentsException $e) {
-            // @todo Return 400: Missing JSON nodes
+            return new JsonResponse(
+                $this->createErrorFromSerialization($e),
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         return new JsonResponse(
             null,
             Response::HTTP_CREATED,
             [
-                'Location' => sprintf('/v1/products/%s.json', $command->getId())
+                'Location' => sprintf(
+                    '/v1/products/%s.json',
+                    $refinedRequest->getId()
+                )
             ]
         );
+    }
+
+    private function createErrorFromSerialization(MissingConstructorArgumentsException $exception)
+    {
+        $mainDto = new FormErrorRfc7807DTO();
+        $mainDto->title = 'Bad Request';
+        $mainDto->type = 'Missing JSON node';
+
+        // Right now Serializer/MissingConstructorArgumentsException is not exploitable without giving too much implementation (namespace) details
+
+        return $mainDto;
+    }
+
+    private function createErrorFromValidation(ConstraintViolationListInterface $violations)
+    {
+        $mainDto = new FormErrorRfc7807DTO();
+        $mainDto->title = 'Bad Request';
+        $mainDto->type = 'UI Validation';
+
+        $items = [];
+        foreach ($violations as $item) {
+            $dto = new FormErrorItemRfc7807DTO();
+            $dto->propertyPath = $item->getPropertyPath();
+            $dto->message = $item->getMessage();
+            $items[] = $dto;
+        }
+
+        $mainDto->violations = $items;
+
+        return $mainDto;
     }
 }

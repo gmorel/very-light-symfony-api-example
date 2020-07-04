@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Entity;
+namespace App\Product\Domain\Entity;
 
-use App\Repository\CategoryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=CategoryRepository::class)
+ * @ORM\Entity()
  */
 class Category
 {

@@ -1,12 +1,17 @@
-# This file contains a user story for demonstration only.
-# Learn how to get started with Behat and BDD on Behat's website:
-# http://behat.org/en/latest/quick_start.html
-
 Feature:
-    In order to prove that the Behat Symfony extension is correctly installed
-    As a user
-    I want to have a demo scenario
+    In order to allow a User to create a Product
+    As a User
+    I want to save my Product info
 
-    Scenario: It receives a response from Symfony's kernel
-        When a demo scenario sends a request to "/"
-        Then the response should be received
+
+    Scenario: It creates a Product
+        When I send a POST request to "/v1/products.json" with body:
+        """
+            {
+                "id": "fabd5e92-02e7-43f7-a962-adab8ec88e94",
+                "name": "Product1"
+            }
+        """
+        Then the response status code should be 201
+        And the header "Location" should contain "/v1/products/fabd5e92-02e7-43f7-a962-adab8ec88e94.json"
+

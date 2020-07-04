@@ -5,8 +5,14 @@
     "behat/gherkin": {
         "version": "v4.6.2"
     },
+    "behat/mink": {
+        "version": "v1.8.1"
+    },
     "behat/transliterator": {
         "version": "v1.3.0"
+    },
+    "behatch/contexts": {
+        "version": "3.3.0"
     },
     "doctrine/annotations": {
         "version": "1.0",
@@ -29,6 +35,9 @@
     "doctrine/common": {
         "version": "2.13.3"
     },
+    "doctrine/data-fixtures": {
+        "version": "1.4.3"
+    },
     "doctrine/dbal": {
         "version": "2.10.2"
     },
@@ -45,6 +54,18 @@
             "config/packages/prod/doctrine.yaml",
             "src/Entity/.gitignore",
             "src/Repository/.gitignore"
+        ]
+    },
+    "doctrine/doctrine-fixtures-bundle": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "fc52d86631a6dfd9fdf3381d0b7e3df2069e51b3"
+        },
+        "files": [
+            "src/DataFixtures/AppFixtures.php"
         ]
     },
     "doctrine/doctrine-migrations-bundle": {
@@ -90,6 +111,12 @@
     "egulias/email-validator": {
         "version": "2.1.18"
     },
+    "friends-of-behat/mink-browserkit-driver": {
+        "version": "v1.4.0"
+    },
+    "friends-of-behat/mink-extension": {
+        "version": "v2.4.0"
+    },
     "friends-of-behat/symfony-extension": {
         "version": "2.0",
         "recipe": {
@@ -104,6 +131,9 @@
             "features/demo.feature",
             "tests/Behat/DemoContext.php"
         ]
+    },
+    "justinrainbow/json-schema": {
+        "version": "5.2.10"
     },
     "laminas/laminas-code": {
         "version": "3.4.1"

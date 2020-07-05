@@ -72,7 +72,7 @@ class ProductController extends AbstractController
             [
                 'Location' => sprintf(
                     '/v1/products/%s.json',
-                    $refinedRequest->getId()
+                    $refinedRequest->id
                 )
             ]
         );

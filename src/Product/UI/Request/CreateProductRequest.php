@@ -5,11 +5,17 @@ declare(strict_types=1);
 namespace App\Product\UI\Request;
 
 use App\Product\Application\Command\CreateProductCommand;
+use Money\Currency;
+use Money\Money;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
  * Raw HTTP User Intention
+ * /!\ Properties are public:
+ * @see https://jimmybogard.com/immutability-in-dtos/
+ * I let you decide whether you prefer Immutable DTO or not.
+ *
  * @author Guillaume MOREL <me@gmorel.io>
  */
 final class CreateProductRequest
@@ -18,30 +24,29 @@ final class CreateProductRequest
      * @Assert\NotNull
      * @Assert\Uuid
      */
-    private string $id;
+    public string $id;
 
     /**
      * @Assert\NotNull
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
-    private string $name;
+    public string $name;
 
-    public function __construct(string $id, string $name)
-    {
-        $this->id = $id;
-        $this->name = $name;
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
-    }
+    /**
+     * @Assert\NotNull
+     * @Assert\Valid
+     */
+    public PriceDTO $price;
 
     public function toCommand(): CreateProductCommand
     {
         return new CreateProductCommand(
             $this->id,
-            $this->name
+            $this->name,
+            new Money( // Javascript app sends number
+                $this->price->amount, // But internally Symfony app manages price amount as string via http://moneyphp.org/ library
+                new Currency($this->price->currency)
+            )
         );
     }
 }

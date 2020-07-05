@@ -5,6 +5,8 @@
         "php": "^7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-json": "*",
+        "moneyphp/money": "^3.3",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/asset": "5.1.*",
         "symfony/console": "5.1.*",
@@ -28,8 +30,7 @@
         "symfony/twig-pack": "*",
         "symfony/validator": "5.1.*",
         "symfony/web-link": "5.1.*",
-        "symfony/yaml": "5.1.*",
-        "ext-json": "*"
+        "symfony/yaml": "5.1.*"
     },
     "require-dev": {
         "behatch/contexts": "^3.3",

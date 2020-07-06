@@ -11,14 +11,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
- * Raw HTTP User Intention
+ * DTO representing how API ingest JSON
  * /!\ Properties are public:
  * @see https://jimmybogard.com/immutability-in-dtos/
  * I let you decide whether you prefer Immutable DTO or not.
  *
  * @author Guillaume MOREL <me@gmorel.io>
  */
-final class CreateProductRequest
+final class CreateProductRequestPayload
 {
     /**
      * @Assert\NotNull

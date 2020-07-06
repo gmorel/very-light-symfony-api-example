@@ -5,7 +5,7 @@ namespace App\Product\UI\Controller;
 use App\Common\UI\Validation\DTO\Error\FormErrorItemRfc7807DTO;
 use App\Common\UI\Validation\DTO\Error\FormErrorRfc7807DTO;
 use App\Product\Application\ProductCommandService;
-use App\Product\UI\Request\CreateProductRequest;
+use App\Product\UI\Request\CreateProductRequestPayload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,14 +41,14 @@ class ProductController extends AbstractController
     public function new(Request $request): JsonResponse
     {
         try {
-            /** @var CreateProductRequest $refinedRequest */
-            $refinedRequest = $this->serializer->deserialize(
+            /** @var CreateProductRequestPayload $requestPayload */
+            $requestPayload = $this->serializer->deserialize(
                 $request->getContent(),
-                CreateProductRequest::class,
+                CreateProductRequestPayload::class,
                 'json',
             );
 
-            $errors = $this->validator->validate($refinedRequest);
+            $errors = $this->validator->validate($requestPayload);
             if ($errors->count() > 0) {
                 return new JsonResponse(
                     $this->createErrorFromValidation($errors),
@@ -57,7 +57,7 @@ class ProductController extends AbstractController
             }
 
             $this->commandService->create(
-                $refinedRequest->toCommand()
+                $requestPayload->toCommand()
             );
         } catch (MissingConstructorArgumentsException $e) {
             return new JsonResponse(
@@ -72,7 +72,7 @@ class ProductController extends AbstractController
             [
                 'Location' => sprintf(
                     '/v1/products/%s.json',
-                    $refinedRequest->id
+                    $requestPayload->id
                 )
             ]
         );
